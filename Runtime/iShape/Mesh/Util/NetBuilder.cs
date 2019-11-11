@@ -19,7 +19,7 @@ namespace iShape.Mesh.Util {
 
             var edges = Convert(indices, Allocator.Temp);
 
-            int n = points.Length;
+            int n = edges.Length;
             var vertices = new NativeArray<Vector3>(4 * n, allocator);
             var triangles = new NativeArray<int>(6 * n, allocator);
 
@@ -27,22 +27,12 @@ namespace iShape.Mesh.Util {
             int ti = 0;
 
             float r = 0.5f * depth;
-            for (int i = 0, j = 0; i < edges.Length; ++i, j += 4) {
+            for (int i = 0, j = 0; i < edges.Length; ++i) {
                 var edge = edges[i];
                 var a = points[edge.a];
                 var b = points[edge.b];
-                var dir = b - a.normalized;
-                var normal = new Vector2(-dir.y, dir.x) * r;
-                
-                var a0 = new Vector3(a.x - normal.x, a.y - normal.y);
-                var a1 = new Vector3(a.x + normal.x, a.y + normal.y);
-                var b0 = new Vector3(b.x + normal.x, b.y + normal.y);
-                var b1 = new Vector3(b.x - normal.x, b.y - normal.y);
-                
-                vertices[vi++] = a0;
-                vertices[vi++] = a1;
-                vertices[vi++] = b0;
-                vertices[vi++] = b1;
+                var dir = (b - a).normalized * r;
+                var normal = new Vector2(-dir.y, dir.x);
 
                 triangles[ti++] = j;
                 triangles[ti++] = j + 1;
@@ -51,6 +41,16 @@ namespace iShape.Mesh.Util {
                 triangles[ti++] = j;
                 triangles[ti++] = j + 2;
                 triangles[ti++] = j + 3;
+                
+                var a0 = new Vector3(a.x - normal.x, a.y - normal.y);
+                var a1 = new Vector3(a.x + normal.x, a.y + normal.y);
+                var b1 = new Vector3(b.x + normal.x, b.y + normal.y);
+                var b0 = new Vector3(b.x - normal.x, b.y - normal.y);
+                
+                vertices[j++] = a0;
+                vertices[j++] = a1;
+                vertices[j++] = b1;
+                vertices[j++] = b0;
             }
 
 
@@ -62,6 +62,7 @@ namespace iShape.Mesh.Util {
             return nativeMesh;
         }
 
+        /*
         private static NativeArray<Edge> Convert(NativeArray<int> indices, Allocator allocator) {
             int n = indices.Length;
             var edges = new NativeArray<Edge>(n, Allocator.Temp); 
@@ -70,8 +71,8 @@ namespace iShape.Mesh.Util {
             int maxIndex = 0;
             for (int i = 0; i < n; i += 3) {
                 for(int ib = 0, ia = 2; ib < 3; ia = ib++){
-                    int a = indices[ia];
-                    int b = indices[ib];
+                    int a = indices[i + ia];
+                    int b = indices[i + ib];
                     if (a > b) {
                         int c = a;
                         a = b;
@@ -99,7 +100,12 @@ namespace iShape.Mesh.Util {
             }
             indexCounter.Dispose();
 
-            var buffer = new NativeArray<int>(m * maxCount, Allocator.Temp);
+            int bufferLength = m * maxCount;
+            var buffer = new NativeArray<int>(bufferLength, Allocator.Temp);
+            for (int i = 0; i < bufferLength; ++i) {
+                buffer[i] = -1;
+            }
+
             var set = new NativeArray<Edge>(counter, Allocator.Temp);
 
             int edgeCounter = 0;
@@ -129,7 +135,21 @@ namespace iShape.Mesh.Util {
             
             return result;
         }
+        */
+        private static NativeArray<Edge> Convert(NativeArray<int> indices, Allocator allocator) {
+            int n = indices.Length;
+            var edges = new NativeArray<Edge>(n, allocator);
+            for (int i = 0; i < n; i += 3) {
+                int a = indices[i];
+                int b = indices[i + 1];
+                int c = indices[i + 2];
+                edges[i] = new Edge(a, b);
+                edges[i + 1] = new Edge(b,c);
+                edges[i + 2] = new Edge(c,a);
+            }
 
+            return edges;
+        }
     }
 
 
