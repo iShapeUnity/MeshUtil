@@ -1,0 +1,13 @@
+{
+    "name": "iShape.Mesh.Editor.Tests",
+    "references": [
+        "iShape.Mesh.Runtime"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
