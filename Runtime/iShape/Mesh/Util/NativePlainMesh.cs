@@ -13,10 +13,14 @@ namespace iShape.Mesh.Util {
                 vertices = this.vertices.ToArray(),
                 triangles = this.triangles.ToArray()
             };
-            this.vertices.Dispose();
-            this.triangles.Dispose();
+            this.Dispose();
 
             return mesh;
+        }
+
+        public void Dispose() {
+            this.vertices.Dispose();
+            this.triangles.Dispose();            
         }
 
     }
