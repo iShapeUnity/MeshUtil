@@ -23,7 +23,8 @@ namespace iShape.Mesh.Util {
             trs.Slice(aTrLen,bTrLen).CopyFrom(b.triangles.Slice(0, bTrLen));
 
             for (int i = aTrLen; i < aTrLen + bTrLen; ++i) {
-                trs[i] = trs[i] + aVxLen;
+                int prevIndex = trs[i]; 
+                trs[i] = prevIndex + aVxLen;
             }
 
             this.vertices = vxs;
