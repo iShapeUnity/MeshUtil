@@ -4,6 +4,33 @@ using UnityEngine;
 namespace iShape.Mesh.Util {
 
     public struct NetBuilder {
+        public struct Shape {
+            public NativeArray<int> triangles;
+            public NativeArray<Vector2> points;
+            public NativeArray<Path> paths;
+
+            public Shape(NativeArray<int> triangles, NativeArray<Vector2> points, NativeArray<Path> paths) {
+                this.triangles = triangles;
+                this.points = points;
+                this.paths = paths;
+            }
+            
+            public void Dispose() {
+                this.triangles.Dispose();
+                this.points.Dispose();
+                this.paths.Dispose();
+            }
+        }
+
+        public struct Path {
+            public readonly int begin;
+            public readonly int end;
+            
+            public Path(int begin, int end) {
+                this.begin = begin;
+                this.end = end;
+            }
+        }
 
         private struct Edge {
             internal readonly int a;
@@ -15,22 +42,21 @@ namespace iShape.Mesh.Util {
             }
         }
 
-        public static NativePlainMesh Build(NativeArray<Vector2> points, NativeArray<int> indices, float depth, Allocator allocator) {
+        public static NativePlainMesh Build(Shape shape, float depth, Allocator allocator) {
 
-            var edges = Convert(indices, Allocator.Temp);
+            var edges = Convert(shape.triangles, shape.paths, Allocator.Temp);
 
             int n = edges.Length;
             var vertices = new NativeArray<Vector3>(4 * n, allocator);
             var triangles = new NativeArray<int>(6 * n, allocator);
 
-            int vi = 0;
             int ti = 0;
 
             float r = 0.5f * depth;
             for (int i = 0, j = 0; i < edges.Length; ++i) {
                 var edge = edges[i];
-                var a = points[edge.a];
-                var b = points[edge.b];
+                var a = shape.points[edge.a];
+                var b = shape.points[edge.b];
                 var dir = (b - a).normalized * r;
                 var normal = new Vector2(-dir.y, dir.x);
 
@@ -62,8 +88,7 @@ namespace iShape.Mesh.Util {
             return nativeMesh;
         }
 
-        /*
-        private static NativeArray<Edge> Convert(NativeArray<int> indices, Allocator allocator) {
+        private static NativeArray<Edge> Convert(NativeArray<int> indices, NativeArray<Path> skipPaths, Allocator allocator) {
             int n = indices.Length;
             var edges = new NativeArray<Edge>(n, Allocator.Temp); 
 
@@ -83,7 +108,10 @@ namespace iShape.Mesh.Util {
                         maxIndex = b;
                     }
 
-                    edges[counter++] = new Edge(a, b);
+                    bool isPath = a + 1 == b && skipPaths.IsContain(b);
+                    if (!isPath) {
+                        edges[counter++] = new Edge(a, b);                        
+                    }
                 }
             }
 
@@ -135,22 +163,21 @@ namespace iShape.Mesh.Util {
             
             return result;
         }
-        */
-        private static NativeArray<Edge> Convert(NativeArray<int> indices, Allocator allocator) {
-            int n = indices.Length;
-            var edges = new NativeArray<Edge>(n, allocator);
-            for (int i = 0; i < n; i += 3) {
-                int a = indices[i];
-                int b = indices[i + 1];
-                int c = indices[i + 2];
-                edges[i] = new Edge(a, b);
-                edges[i + 1] = new Edge(b,c);
-                edges[i + 2] = new Edge(c,a);
-            }
 
-            return edges;
-        }
+
     }
 
+    internal static class NativeArrayExt {
+        internal static bool IsContain(this NativeArray<NetBuilder.Path> self, int value) {
+            int n = self.Length;
+            for (int i = 0; i < n; ++i) {
+                var path = self[i];
+                if (value >= path.begin && value < path.end) {
+                    return true;
+                }
+            }
 
+            return false;
+        }        
+    }
 }
