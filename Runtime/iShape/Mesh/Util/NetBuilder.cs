@@ -25,10 +25,12 @@ namespace iShape.Mesh.Util {
         public struct Path {
             public readonly int begin;
             public readonly int end;
+            public readonly bool isClockWise;
             
-            public Path(int begin, int end) {
+            public Path(int begin, int end, bool isClockWise) {
                 this.begin = begin;
                 this.end = end;
+                this.isClockWise = isClockWise;
             }
         }
 
@@ -107,8 +109,8 @@ namespace iShape.Mesh.Util {
                     if (b > maxIndex) {
                         maxIndex = b;
                     }
-
-                    bool isPath = a + 1 == b && skipPaths.IsContain(b);
+                    
+                    bool isPath = a + 1 == b && skipPaths.IsContain(b) || skipPaths.IsEnds(a, b);
                     if (!isPath) {
                         edges[counter++] = new Edge(a, b);                        
                     }
@@ -172,12 +174,24 @@ namespace iShape.Mesh.Util {
             int n = self.Length;
             for (int i = 0; i < n; ++i) {
                 var path = self[i];
-                if (value >= path.begin && value < path.end) {
+                if (value >= path.begin && value <= path.end) {
                     return true;
                 }
             }
 
             return false;
-        }        
+        }
+        
+        internal static bool IsEnds(this NativeArray<NetBuilder.Path> self, int a, int b) {
+            int n = self.Length;
+            for (int i = 0; i < n; ++i) {
+                var path = self[i];
+                if (a == path.begin && b == path.end) {
+                    return true;
+                }
+            }
+
+            return false;
+        } 
     }
 }

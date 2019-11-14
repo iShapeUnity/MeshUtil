@@ -5,7 +5,28 @@ namespace iShape.Mesh.Util {
 
 	public struct PathBuilder {
 
-        public static NativePlainMesh BuildClosedPath(NativeArray<Vector2> path, float depth, Allocator allocator) {
+        public static NativePlainMesh BuildClosedPath(NativeArray<Vector2> path, float depth, bool isClockWise, Allocator allocator
+        ) {
+            if (isClockWise) {
+                return BuildClosedPath(path, depth, allocator);
+            }
+
+            var reversed = new NativeArray<Vector2>(path, Allocator.Temp);
+            int j = path.Length - 1;
+            int n = path.Length >> 1;
+            for (int i = 0; i < n; ++i, --j) {
+                var ai = reversed[i];
+                var aj = reversed[j];
+                reversed[i] = aj;
+                reversed[j] = ai;
+            }
+            var result = BuildClosedPath(reversed, depth, allocator);
+            reversed.Dispose();
+            
+            return result;
+        }
+
+        private static NativePlainMesh BuildClosedPath(NativeArray<Vector2> path, float depth, Allocator allocator) {
             int n = path.Length;
 
             var vertices = new NativeArray<Vector3>(4 * n, Allocator.Temp);
