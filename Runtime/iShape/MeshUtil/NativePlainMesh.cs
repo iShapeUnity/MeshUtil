@@ -32,7 +32,7 @@ namespace iShape.MeshUtil {
         }
 
 
-        public UnityEngine.Mesh Convert() {
+        public Mesh Convert() {
             var mesh = new UnityEngine.Mesh {
                 vertices = this.vertices.ToArray(),
                 triangles = this.triangles.ToArray()
@@ -40,6 +40,13 @@ namespace iShape.MeshUtil {
             this.Dispose();
 
             return mesh;
+        }
+        
+        public Mesh ToMesh() {
+            return new UnityEngine.Mesh {
+                vertices = this.vertices.ToArray(),
+                triangles = this.triangles.ToArray()
+            };
         }
 
         public void Dispose() {
