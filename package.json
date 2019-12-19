@@ -1,6 +1,6 @@
 {
-    "name": "com.ishape.mesh",
-    "displayName": "iShape.Mesh",
+    "name": "com.ishape.meshutil",
+    "displayName": "iShape.MeshUtil",
     "version": "0.0.1",
     "unity": "2019.2",
     "description": "Mesh generation library",

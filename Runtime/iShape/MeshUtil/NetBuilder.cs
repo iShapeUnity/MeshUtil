@@ -1,7 +1,7 @@
 using Unity.Collections;
 using UnityEngine;
 
-namespace iShape.Mesh.Util {
+namespace iShape.MeshUtil {
 
     public struct NetBuilder {
         public struct Shape {
