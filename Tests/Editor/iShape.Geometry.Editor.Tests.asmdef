@@ -1,7 +1,8 @@
 {
     "name": "iShape.MeshUtil.Editor.Tests",
     "references": [
-        "iShape.MeshUtil.Runtime"
+        "iShape.MeshUtil.Runtime",
+        "iShape.Geometry.Runtime"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

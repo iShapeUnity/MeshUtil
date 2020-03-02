@@ -1,4 +1,7 @@
 {
     "name": "iShape.MeshUtil.Runtime",
-    "excludePlatforms": []
+    "excludePlatforms": [],
+	"references": [
+        "iShape.Geometry.Runtime"
+    ]
 }

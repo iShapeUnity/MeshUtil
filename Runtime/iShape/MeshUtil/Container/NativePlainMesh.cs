@@ -8,6 +8,11 @@ namespace iShape.MeshUtil {
         public NativeArray<Vector3> vertices;
         public NativeArray<int> triangles;
 
+        public NativePlainMesh(NativeArray<Vector3> vertices, NativeArray<int> triangles) {
+            this.vertices = vertices;
+            this.triangles = triangles;
+        }
+        
         public NativePlainMesh(NativePlainMesh a, NativePlainMesh b, Allocator allocator) {
             int aVxLen = a.vertices.Length;
             int bVxLen = b.vertices.Length;
