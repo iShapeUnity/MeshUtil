@@ -36,9 +36,22 @@ namespace iShape.MeshUtil {
             this.triangles = trs;
         }
 
-
+        public void Shift(int offset) {
+            for (int i = 0; i < triangles.Length; ++i) {
+                this.triangles[i] = triangles[i] + offset;
+            }
+        }
+        
+        public void ShiftZ(float offset) {
+            for (int i = 0; i < vertices.Length; ++i) {
+                var v = this.vertices[i];
+                v.z += offset;
+                this.vertices[i] = v;
+            }
+        }
+        
         public Mesh Convert() {
-            var mesh = new UnityEngine.Mesh {
+            var mesh = new Mesh {
                 vertices = this.vertices.ToArray(),
                 triangles = this.triangles.ToArray()
             };
@@ -48,7 +61,7 @@ namespace iShape.MeshUtil {
         }
         
         public Mesh ToMesh() {
-            return new UnityEngine.Mesh {
+            return new Mesh {
                 vertices = this.vertices.ToArray(),
                 triangles = this.triangles.ToArray()
             };

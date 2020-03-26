@@ -5,9 +5,9 @@ namespace iShape.MeshUtil {
 
     public struct NativePlainMeshList {
         
-        private NativeArray<Vector3> vertices;
-        private NativeArray<int> indices;
-        private NativeArray<MeshLayout> layouts;
+        public NativeArray<Vector3> vertices;
+        public NativeArray<int> indices;
+        public NativeArray<MeshLayout> layouts;
         
         public int Count => layouts.Length;
 

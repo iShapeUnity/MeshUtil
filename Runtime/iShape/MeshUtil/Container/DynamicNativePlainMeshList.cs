@@ -6,9 +6,9 @@ namespace iShape.MeshUtil {
 
     public struct DynamicNativePlainMeshList {
         
-        private DynamicArray<Vector3> vertices;
-        private DynamicArray<int> indices;
-        private DynamicArray<MeshLayout> layouts;
+        public DynamicArray<Vector3> vertices;
+        public DynamicArray<int> indices;
+        public DynamicArray<MeshLayout> layouts;
 
         public DynamicNativePlainMeshList(Allocator allocator) {
             this.vertices = new DynamicArray<Vector3>(allocator);
@@ -52,10 +52,20 @@ namespace iShape.MeshUtil {
         public void Add(NativePlainMesh mesh) {
             var vertexLayout = new MeshLayout.Layout(this.vertices.Count, mesh.vertices.Length);
             var indexLayout = new MeshLayout.Layout(this.indices.Count, mesh.triangles.Length);
-            
+       
             this.vertices.Add(mesh.vertices);
             this.indices.Add(mesh.triangles);
-            
+
+            this.layouts.Add(new MeshLayout(vertexLayout, indexLayout));
+        }
+
+        public void Add(DynamicArray<Vector3> vertices, DynamicArray<int> triangles)  {
+            var vertexLayout = new MeshLayout.Layout(this.vertices.Count, vertices.Count);
+            var indexLayout = new MeshLayout.Layout(this.indices.Count, triangles.Count);
+       
+            this.vertices.Add(vertices);
+            this.indices.Add(triangles);
+
             this.layouts.Add(new MeshLayout(vertexLayout, indexLayout));
         }
 

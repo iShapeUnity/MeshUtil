@@ -195,7 +195,6 @@ namespace iShape.MeshUtil {
             };
         }
 
-
         private static Vector2 Cross(Vector2 a0, Vector2 a1, Vector2 b0, Vector2 b1) {
             Vector2 dA = a0 - a1;
             Vector2 dB = b0 - b1;
