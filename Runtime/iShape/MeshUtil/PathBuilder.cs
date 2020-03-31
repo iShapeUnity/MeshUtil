@@ -56,8 +56,9 @@ namespace iShape.MeshUtil {
                 var n1 = new Vector2(-d1.y, d1.x) * r;
 
                 float dot = d0.Multiply(d1);
+                const float epsilon = 0.00_0001f;
 
-                var isEqual = Mathf.Approximately(dot, 0f);
+                var isEqual = -epsilon < dot && dot < epsilon;
                 int left_1;
                 int left_2;
                 int right_1;
